@@ -1,0 +1,28 @@
+{
+  "name": "graphql-test",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000g\u0000r\u0000a\u0000p\u0000h\u0000q\u0000l\u0000-\u0000t\u0000e\u0000s\u0000t\u0000\r\u0000 \u0000",
+  "main": "server.js",
+  "scripts": {
+    "devStart": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krzotki/graphql-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krzotki/graphql-test/issues"
+  },
+  "homepage": "https://github.com/krzotki/graphql-test#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
