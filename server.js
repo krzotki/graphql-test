@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { graphqlHTTP } = require("express-graphql");
 const {
     GraphQLSchema,
@@ -6,7 +7,8 @@ const {
     GraphQLString,
     GraphQLList,
     GraphQLInt,
-    GraphQLNonNull
+    GraphQLNonNull,
+    GraphQLInputObjectType
 } = require('graphql');
 const app = express();
 
@@ -68,6 +70,19 @@ const SongType = new GraphQLObjectType({
     })
 });
 
+const SongInput = new GraphQLInputObjectType({
+    name: 'SongInput',
+    description: 'Input song',
+    fields: () => ({
+        name: {
+            type: GraphQLNonNull(GraphQLString)
+        },
+        authorId: {
+            type: GraphQLNonNull(GraphQLInt)
+        },
+    })
+});
+
 const RootQueryType = new GraphQLObjectType({
     name: 'Query',
     description: 'Root query',
@@ -86,7 +101,22 @@ const RootQueryType = new GraphQLObjectType({
         songs: {
             type: new GraphQLList(SongType),
             description: 'List of songs',
-            resolve: () => songs
+            args: {
+                author: {
+                    type: GraphQLString
+                }
+            },
+
+            resolve: (parent, args) => {
+                if(args.author.length > 0) {
+                    return songs.filter((song) => {
+                        const author = authors.find(author => author.id === song.authorId);
+                        return author && author.name.includes(args.author);
+                    })
+                } 
+
+                return songs;
+            }
         },
 
         author: {
@@ -115,16 +145,17 @@ const RootMutationType = new GraphQLObjectType({
     fields: () => ({
         addSong: {
             type: SongType,
-            description: 'Add a songs',
+            description: 'Add a song',
             args: {                
-                name: {type: GraphQLNonNull(GraphQLString)},
-                authorId: {type: GraphQLNonNull(GraphQLInt)},
+                song: {
+                    type: SongInput
+                }
             },
             resolve: (parent, args) => {
                 const newSong = {
                     id: songs.length + 1,
-                    name: args.name,
-                    authorId: args.authorId
+                    name: args.song.name,
+                    authorId: args.song.authorId
                 };
                 songs.push(newSong);
 
@@ -159,8 +190,11 @@ const schema = new GraphQLSchema({
 });
 
 
+app.use(cors())
 app.use('/graphql', graphqlHTTP({
     graphiql: true,
     schema
 }));
+
+
 app.listen(5000, () => console.log('Running server')); 
