@@ -16,6 +16,8 @@ const authors = [
     {id: 1, name: 'AC/DC'},
     {id: 2, name: 'Black Sabath'},
     {id: 3, name: 'Guns N\' Roses'},
+    {id: 4, name: 'Rick astley'},
+    {id: 5, name: 'Ozzy Osbourne'}
 ];
 
 const songs = [
@@ -26,6 +28,7 @@ const songs = [
     {id: 5, name: 'Iron Man', authorId: 2},
     {id: 6, name: 'Welcome to the jungle', authorId: 3},
     {id: 7, name: 'Paradise City', authorId: 3},
+    
 ];
 
 const AuthorType = new GraphQLObjectType({
@@ -108,6 +111,7 @@ const RootQueryType = new GraphQLObjectType({
             },
 
             resolve: (parent, args) => {
+                console.log(args);
                 if(args.author.length > 0) {
                     return songs.filter((song) => {
                         const author = authors.find(author => author.id === song.authorId);
